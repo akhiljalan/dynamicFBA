@@ -1,6 +1,6 @@
 # Dynamic Flux Balance Analysis 
 
-This repository contains a lightweight and modular implementation of **Dynamic Flux Balance Analysis** (Dynamic FBA). It explicitly couples: 
+This repository contains a lightweight and modular implementation of **Dynamic Flux Balance Analysis** (Dynamic FBA). It explicitly handles: 
 - Biomass growth 
 - Time-varying extracellular concentrations 
 - Optional biomass inhibition 
@@ -12,7 +12,7 @@ This repository contains a lightweight and modular implementation of **Dynamic F
 Fork/clone and install. 
 ```bash
 git clone https://github.com/YOUR_USERNAME/dynamicFBA.git
-cd dynamic-fba
+cd dynamicFBA
 ```
 
 ## Python Requirements 
@@ -29,10 +29,12 @@ The core logic of the simulation is in the `DynamicFBASimulator.py` file. In a n
 
 1. Initializes DynamicFBASimulator object with information from a config file (e.g. `configs/ecoli_config1.json`). The config file specifies Michaelis-Menten constants, the name of the COBRA model (e.g. `textbook`) to be used, and other simulation parameters. 
 2. Stores biomass and extracellular concentrations for exchange reactions. 
-3. Uses Michaelis-Menten formulas to update flux bounds for uptake reactions based on extracellular concentrations. 
+3. Uses Michaelis-Menten formulas to update flux bounds for uptake reactions based on extracellular concentrations. For metabolite $m$ with concentration $C_m$ and parameters $V_{max}, K_m$, the flux lower bound $\ell_M$ becomes: 
+$$\ell_M = -V_{max} \frac{K_m}{K_m + C_m}$$
 4. Solves a FBA instance (via Linear Programming) to obtain fluxes and biomass growth rate. 
-5. Optionally computes inhibitory term for biomass growth due to external product (e.g. Acetate and Lactate). 
-6. Updates biomass and extracellular concentrations based on Euler-Maruyama stepping. 
+5. Optionally computes inhibitory term for biomass growth due to external product (e.g. Acetate and Lactate). If $M$ is the set of metabolites that are inhibitory, where $m \in M$ has concentration $C_m$ and parameter $K_n(m)$, then the biomass inhibition term $\nu$ becomes: 
+$$\nu = \prod\limits_{m \in M} \frac{K_n(m)}{K_{n}(m) + C_m}$$
+6. Updates biomass and extracellular concentrations based on Forward Euler stepping. 
 
 The simulation halts when the step limit is reached, OR when the FBA instance in Step (4) is infeasible. 
 
@@ -51,4 +53,8 @@ python demo_ecoli1.py
 ```
 
 Results will be plotted to `dynamicFBA/demo_ecoli1.csv`. 
+
+With the 
+
+
 

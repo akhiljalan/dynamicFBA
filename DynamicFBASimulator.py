@@ -140,7 +140,7 @@ class DynamicFBASimulator:
 
     def _update_concentrations(self, fba_soln) -> None: 
         '''
-        Euler-Maruyama update for all extracellular concentrations. 
+        Euler update for all extracellular concentrations. 
 
         fba_soln: Solution for FBA, keyed by metabolites. 
         '''
@@ -160,7 +160,7 @@ class DynamicFBASimulator:
         mu: float, 
         inhibition_term: float) -> None: 
         '''
-        Euler-Maruyama update for biomass. 
+        Euler update for biomass. 
             dX / dt = mu * inhibition_term * X 
 
         mu: Instantaneous growth rate, computed from FBA solution. 
@@ -213,11 +213,12 @@ class DynamicFBASimulator:
                 if verbose and timestep % print_every == 0: 
                     num_seconds_simulated = timestep * self.dt
                     num_hours_simulated = num_seconds_simulated / 3600.0
-                    print(f'{num_hours_simulated} hours simulated.')
-                    print(f'Biomass: {self.biomass} gDW.')
+                    print(f'{num_hours_simulated:.4f} hours simulated.')
+                    print(f'Biomass: {self.biomass:.4f} gDW.')
             else: 
                 # Halt simulation when infeasible 
                 break 
         if verbose: 
             cur_time = time.time()
+            print(f'Final Biomass: {self.biomass:.4f} gDW.')
             print(f'Dynamic FBA simulation completed in {cur_time - start_time:.2f} seconds.')
