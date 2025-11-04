@@ -60,8 +60,11 @@ In this demo, setpoint control is not explicitly simulated as a PID controller. 
 
 Results are saved to the `demo_results/demo_ecoli1/` directory. Your demo should produce plots in a file called `demo_results/demo_ecoli1/results_grid.pdf` that look like this. 
 
+![image](figs/results_grid_ecoli1.jpg)
+
+<!-- 
 <object data="figs/results_grid_ecoli1.pdf" type="application/pdf" width="600px" height="1400px">
     <embed src="figs/results_grid_ecoli1.pdf">
         <p>This browser does not support PDFs. Please download the PDF to view it: <a href="figs/results_grid_ecoli1.pdf">Download PDF</a>.</p>
     </embed>
-</object>
+</object> -->
