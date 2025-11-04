@@ -12,5 +12,6 @@ def load_simulator_from_json(json_path: str, model_name: str = 'textbook'):
         ext_conc=cfg.get("ext_conc", {}),
         vmax_params=cfg.get("vmax_params", {}),
         km_params=cfg.get("km_params", {}),
-        kn_params=cfg.get("kn_params", {})
+        kn_params=cfg.get("kn_params", {}),
+        setpoints=cfg.get("setpoints", {})
     )
