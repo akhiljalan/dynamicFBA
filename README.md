@@ -42,9 +42,7 @@ $$\nu = \prod\limits_{m \in M} \frac{K_n(m)}{K_{n}(m) + C(m)}$$
 
 The simulation halts when the step limit is reached, or when the FBA instance in Step (4) is infeasible. 
 
-## Demos 
-
-### Demo 1: E Coli Core in Batch Mode
+## Demo: E Coli in Batch Mode with DO Control  
 
 This demo is specified in `configs/ecoli_config1.json`. Note that the media composition is taken from the following protocols: 
 - [DSMZ Medium 382](https://www.dsmz.de/microorganisms/medium/pdf/DSMZ_Medium382.pdf)
@@ -56,15 +54,8 @@ cd dynamicFBA/
 python demo_ecoli1.py
 ```
 
-In this demo, setpoint control is not explicitly simulated as a PID controller. We assume that lag time is negligible and therefore clamp setpoint values throughout the simulation. 
+In this demo, we control DO (dissolved oxygen). Typically setpoint control is done via PID control; for purposes of simulation, we assume that the lag time is negligible and therefore simply clamp setpoint values throughout the simulation. 
 
-Results are saved to the `demo_results/demo_ecoli1/` directory. Your demo should produce plots in a file called `demo_results/demo_ecoli1/results_grid.pdf` that look like this. 
+After running the demo script, results are saved to the `demo_results/demo_ecoli1/` directory. Your demo should produce plots in a file called `demo_results/demo_ecoli1/results_grid.pdf` that look like this. 
 
 ![image](figs/results_grid_ecoli1.jpg)
-
-<!-- 
-<object data="figs/results_grid_ecoli1.pdf" type="application/pdf" width="600px" height="1400px">
-    <embed src="figs/results_grid_ecoli1.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="figs/results_grid_ecoli1.pdf">Download PDF</a>.</p>
-    </embed>
-</object> -->
