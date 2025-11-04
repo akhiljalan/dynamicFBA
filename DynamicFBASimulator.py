@@ -6,6 +6,7 @@ class DynamicFBASimulator:
     '''
     Simulator for dynamic FBA (Flux Balance Analysis). 
     Assumes a single compartment with uniform extracellular concentrations.
+    Uses COBRApy metabolic model for stoichiometric information. 
 
     Units: 
     -- Fluxes (Cobra): mmol / gDW / hr 
@@ -25,6 +26,7 @@ class DynamicFBASimulator:
         km_params: Optional[Dict[str, float]] = None, # Reaction ID -> Km Value (Monod)
         kn_params: Optional[Dict[str, float]] = None, # Reaction ID -> Kn Value (inhibitory)
         ext_conc: Optional[Dict[str, float]] = None, # Metabolite ID -> External concentration (mM)
+        setpoints: Optional[Dict[str, float]] = None, # Metabolite ID -> External concentration (mM)
         essential_exchanges: Optional[List[str]] = None, 
         clip_negative: bool = True, # If True, clip negative concentrations to zero 
     ): 
@@ -38,7 +40,9 @@ class DynamicFBASimulator:
         self.km_params = km_params or {}
         self.kn_params = kn_params or {}
         self.ext_conc = ext_conc or {}
+        self.setpoints = setpoints or {}
         self._init_missing_metabolites()
+        self._check_setpoint_keys()
         self.exchange_reactions_map = self._get_exchange_map()
 
         self.essential_exchanges = essential_exchanges
@@ -61,6 +65,15 @@ class DynamicFBASimulator:
             for metabolite in rxn.metabolites: 
                 if metabolite.id not in self.ext_conc: 
                     self.ext_conc[metabolite.id] = 0.0 
+
+    def _check_setpoint_keys(self) -> None: 
+        '''
+        For each key in self.setpoints, ensure it is 
+        present in self.ext_conc. 
+        '''
+        for k in self.setpoints: 
+            if k not in self.ext_conc: 
+                raise ValueError(f"{k} set to {self.setpoints[k]} but not found in external concentrations.")
 
     def _get_exchange_map(self) -> Dict[str, str]: 
         '''
@@ -86,7 +99,6 @@ class DynamicFBASimulator:
             'biomass_gDW': [], 
             **{m: [] for m in self.ext_conc.keys()}, # track metabolites per time step 
         }
-
 
     def _apply_essential_bounds(self) -> None: 
         '''
@@ -145,8 +157,9 @@ class DynamicFBASimulator:
         fba_soln: Solution for FBA, keyed by metabolites. 
         '''
         for metabolite_id, reaction_id in self.exchange_reactions_map.items(): 
-            
-            if metabolite_id not in self.ext_conc: 
+            # Only update concentrations for metabolites that are NOT
+            # maintained at a setpoint value, AND are present in self.ext_conc. 
+            if metabolite_id not in self.ext_conc or metabolite_id in self.setpoints: 
                 continue 
             flux = fba_soln.fluxes[reaction_id] 
             # Note that Cobra fluxes are in 1/hr, not 1/s units. 
