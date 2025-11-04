@@ -1,5 +1,5 @@
 from loaders import load_simulator_from_json
-from io_utils import save_results_to_csv, plot_results_from_csv_separate
+from io_utils import save_results_to_csv, plot_results_from_csv_one_by_one
 
 if __name__ == "__main__":
     sim = load_simulator_from_json("configs/ecoli_config1.json")
@@ -13,4 +13,4 @@ if __name__ == "__main__":
     # TODO generate more descriptive filename 
     save_results_to_csv(sim, "demo_ecoli1.csv")
 
-    plot_results_from_csv_separate("demo_ecoli1.csv")
+    plot_results_from_csv_one_by_one("demo_ecoli1.csv")
